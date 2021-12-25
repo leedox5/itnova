@@ -1,5 +1,5 @@
-#local repository ¼³Á¤
-#ÇÁ·ÎÁ§Æ® »ı¼º
+#local repository ì„¤ì •
+#í”„ë¡œì íŠ¸ ìƒì„±
 mvn archetype:generate -DgroupId=kr.pe.leedox -DartifactId=MavenPrj01 -DarchetypeArtifactId=maven-archetype-quickstart -DinteractiveMode=false
 
 [INFO] ----------------------------------------------------------------------------
@@ -19,3 +19,4 @@ mvn archetype:generate -DgroupId=kr.pe.leedox -DartifactId=MavenPrj01 -Darchetyp
 [INFO] Finished at: 2021-04-02T21:52:17+09:00
 [INFO] ------------------------------------------------------------------------
 
+# ì‹œì‘
