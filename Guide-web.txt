@@ -1,0 +1,245 @@
+# Servlet Init Parameter 활용
+  서블릿을 생성하고 초기화할 때, 서블릿 컨테니어가 서블릿에게 전달하는 데이터
+web.xml -----------------
+  <servlet>
+      <servlet-name>MtcdServlet</servlet-name>
+      <servlet-class>itnova.MtcdServlet</servlet-class>
+      <init-param>
+          <param-name>driver</param-name>
+          <param-value>org.sqlite.JDBC</param-value>
+      </init-param>
+      <init-param>
+          <param-name>url</param-name>
+          <param-value>jdbc:sqlite:E:/workspace/adworks/KNDA.db</param-value>
+      </init-param>
+      <init-param>
+          <param-name>username</param-name>
+          <param-value>user</param-value>
+      </init-param>
+      <init-param>
+          <param-name>password</param-name>
+          <param-value>pass</param-value>
+      </init-param>
+  </servlet>
+  <servlet-mapping>
+      <servlet-name>MtcdServlet</servlet-name>
+      <url-pattern>/mtcd</url-pattern>
+  </servlet-mapping>
+---------------------------------------------------------  
+  Dao connection 부분 수정
+  setConnection 추가
+
+  servlet에서 connection 생성해서 넘겨주기
+
+	private Connection getConnection() throws SQLException {
+		Connection con = null;
+		try {
+			Class.forName(this.getInitParameter("driver"));
+			con = DriverManager.getConnection(this.getInitParameter("url"));
+		}catch(ClassNotFoundException e){
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+			System.exit(0);
+		}
+		return con;
+	}
+
+# Context Init Parameter
+- Servlet init param은 다른 서블릿에서는 참조할수 없다.
+- 공통이라면 context param 활용
+- 서블릿들이 공유할 수 있는 매개변수다.
+
+web.xml
+  <context-param>
+    <param-name>driver</param-name>
+    <param-value>org.sqlite.JDBC</param-value>
+  </context-param>
+  <context-param>
+    <param-name>url</param-name>
+    <param-value>jdbc:sqlite:E:/workspace/adworks/KNDA.db</param-value>
+  </context-param>
+
+-- connection 가져오기
+	private Connection getConnectionCont() throws SQLException {
+		Connection con = null;
+		ServletContext sc = this.getServletContext();
+		try {
+			Class.forName(sc.getInitParameter("driver"));
+			con = DriverManager.getConnection(sc.getInitParameter("url"));
+		}catch(ClassNotFoundException e){
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+			System.exit(0);
+		}
+		return con;
+	}
+
+# ServletContext로 DB connection 객체관리하기
+- 서블릿들이 호출될때마다 DB 커넥션을 생성하지 않고
+어플이 시작될 때 생성해서 ServletContext에 저장하면
+필요한 서블릿에서 꺼내 쓸 수 있다.
+
+- 공유 자원을 준비하는 서블릿 작성
+	public void init(ServletConfig config) throws ServletException {
+	    System.out.println("AppInitServlet.init() called");
+	    super.init(config);
+	 
+	    // 모든 서블릿이 사용할 수 있도록 ServletContext 인스턴스에 저장
+	    ServletContext sc = this.getServletContext();
+	 
+	    try {
+	        Class.forName(sc.getInitParameter("driver"));
+	        Connection conn = DriverManager.getConnection(sc.getInitParameter("url"));
+	 
+	        sc.setAttribute("conn", conn);
+	    } catch (Throwable e) {
+	        throw new ServletException(e);
+	    }		
+	}
+	
+	public void destroy() {
+	     System.out.println("AppInitServlet.destroy() called");
+	     super.destroy();
+	     
+	     Connection conn = (Connection) this.getServletContext().getAttribute("conn");
+	
+	     try {
+	         if(conn != null && !conn.isClosed()) conn.close();
+	     } catch (SQLException e) {
+	         e.printStackTrace();
+	     }
+	}	
+
+- web.xml
+<servlet>
+    <servlet-name>AppInitServlet</servlet-name>
+    <servlet-class>itnova.AppInitServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+</servlet>
+* 클라이언트 요청이 없어도 서블릿이 생성돼야 하므로 <load-on-startup> 태그를 추가한다.
+
+- connection 얻기
+	private Connection getConnectionInit() throws SQLException {
+		ServletContext sc = this.getServletContext();
+		return (Connection)sc.getAttribute("conn");
+	}
+
+
+# ServletContextListener의 활용
+
+
+================================================
+
+# Model2
+  Servlet이 Controller를 담당하고 JSP는 View만 담당
+
+# forward와 redirect
+- redirect는 HTTP 응답 코드로 302를 클라이언트에 넘겨줘서, 해당 URL로 다시 요청 하도록 합니다.
+- 모든 자원을 반환한 상태로 새롭게 요청을 하는 것이죠.
+
+- 반면 forward는 요청 받은 자원을 그대로 유지한 채로 제어권을 넘기는 request의 연장성입니다.
+- Servlet에서 요청을 처리한 후 그 자원을 그대로 유지한채 JSP에 넘겨줘서 JSP가 이를 사용할 수 있도록 하는 메서드입니다.
+
+# "add".equals(action)   action.equals("add")의 차이
+
+- Servlet doGet method
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		EmpDao dao = new EmpDao();
+		try {
+			dao.setConnection(getConnection());
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		List<Mtcd> list = new ArrayList<Mtcd>();
+		list = dao.getList();
+		request.setAttribute("list", list);
+
+		RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/Mtcd.jsp");
+        rd.forward(request, response);
+	}
+
+# view 설정
+WEB-INF/views/Mtcd.jsp -----------------------
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="itnova.EmpVo"%>
+<%@page import="java.util.List"%>
+<%@page import="java.util.ArrayList"%>
+<%
+    List<EmpVo> list = (List<EmpVo>)request.getAttribute("list");
+%>
+<!doctype html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>관리</title>
+</head>
+<body>
+<form action="/itnova-web/emp" method="post">
+    <input type="hidden" name="a" value="add">
+    <table border="1" width="500">
+        <tr>
+            <td>코드</td><td><input type="text" name="code"></td>
+            <td>이름</td><td><input type="text" name="name"></td>
+        </tr>
+        <tr>
+            <td colspan=4 align=right><input type="submit" VALUE=" 확인 "></td>
+        </tr>
+    </table>
+</form>
+<br>
+    <table width="500" border="1">
+    <% 
+    if(list != null){
+        for(EmpVo vo : list){ %>
+            <tr>
+                <td><%= vo.getNum() %></td>
+                <td><%= vo.getName() %></td>
+                <td><%= vo.getDeptNum() %></td>
+                <td><a href="/itnova-web/emp?a=delete&code=<%= vo.getNum() %>">삭제</a></td>
+            </tr>
+    <% 
+        } 
+    } 
+    %>
+    </table>
+</body>
+</html>
+
+- servlet add, delete 로직 추가
+        String action = request.getParameter("a");
+        if("add".equals(action)) {
+            request.setCharacterEncoding("utf-8");
+
+            String num = request.getParameter("code");
+            String name = request.getParameter("name");
+
+            EmpVo vo = new EmpVo();
+
+            vo.setNum(num);
+            vo.setName(name);
+
+            dao.insert(vo);
+
+            response.sendRedirect("/itnova-web/emp");
+        } else if("delete".equals(action)) {
+        	String num = request.getParameter("code");
+        	dao.delete(num);
+            response.sendRedirect("/itnova-web/emp");
+        } else {
+            RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/emp.jsp");
+            rd.forward(request, response);
+        }
+
+
+# Dao에서는 ServletContext에 접근할 수 없기 때문에 
+  외부로부터 Connection 객체를 주입받기 위한 인스턴스 변수와 setter가 필요하다.
+
+* 참조
+https://atoz-develop.tistory.com/entry/IntelliJ-%ED%9A%8C%EC%9B%90%EA%B0%80%EC%9E%85-%EC%98%88%EC%A0%9CMVC-7-DAO-%EB%B6%84%EB%A6%AC%ED%95%98%EA%B8%B0?category=796489
+
+Connection connection;
+
+public void setConnection(Connection connection) {
+    this.connection = connection;
+}
+
+이렇게 필요한 객체를 외부로부터 주입받는 것을 의존성 주입(DI, Dependency Injection)
+또는 역제어(IoC, Inversion of Control)이라고 부른다.

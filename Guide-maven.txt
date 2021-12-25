@@ -1,0 +1,21 @@
+#local repository 설정
+#프로젝트 생성
+mvn archetype:generate -DgroupId=kr.pe.leedox -DartifactId=MavenPrj01 -DarchetypeArtifactId=maven-archetype-quickstart -DinteractiveMode=false
+
+[INFO] ----------------------------------------------------------------------------
+[INFO] Using following parameters for creating project from Old (1.x) Archetype: maven-archetype-quickstart:1.0
+[INFO] ----------------------------------------------------------------------------
+[INFO] Parameter: basedir, Value: E:\work
+[INFO] Parameter: package, Value: kr.pe.leedox
+[INFO] Parameter: groupId, Value: kr.pe.leedox
+[INFO] Parameter: artifactId, Value: MavenPrj01
+[INFO] Parameter: packageName, Value: kr.pe.leedox
+[INFO] Parameter: version, Value: 1.0-SNAPSHOT
+[INFO] project created from Old (1.x) Archetype in dir: E:\work\MavenPrj01
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  01:34 min
+[INFO] Finished at: 2021-04-02T21:52:17+09:00
+[INFO] ------------------------------------------------------------------------
+

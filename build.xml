@@ -1,0 +1,201 @@
+<project name="mcams.prod" basedir="." xmlns:artifact="antlib:org.apache.maven.artifact.ant">
+	<path id="maven-ant-tasks.classpath" path="lib/maven-ant-tasks-2.1.3.jar"/>
+	<typedef resource="org/apache/maven/artifact/ant/antlib.xml" 
+	         uri="antlib:org.apache.maven.artifact.ant" 
+			 classpathref="maven-ant-tasks.classpath"/>
+	<artifact:pom id="mypom" file="pom.xml"/>
+	<artifact:dependencies filesetId="mydeps" pomRefId="mypom" pathId="pom.classpath"/>
+
+	<property name="src.dir"   location="src"/>
+	<property name="src.main"         location="${src.dir}/main/com/itnova"/>
+	<property name="src.main.daemon"  value="${src.dir}/main/mobis/mcams/pm/daemon"/>
+	<property name="src.test" location="${src.dir}/test/com/itnova"/>
+	<property name="build.dir"   value="build"/>
+	<property name="classes.dir.main" value="${build.dir}/main/classes"/>
+	<property name="classes.dir.test" value="${build.dir}/test/classes"/>
+	<property name="svn.rep.main"     value="http://10.240.56.169:8080/svn/mcams.war/prod/trunk/WEB-INF/src/com/itnova"/>
+	<property name="svn.rep.daemon"   value="http://10.240.56.169:8080/svn/mcams.war/prod/trunk/WEB-INF/src/mobis/mcams/pm/daemon"/>
+	<property name="svn.rep.test"     value="http://10.240.43.146:8090/svn/mcams/trunk/src/test"/>
+	<available file="${src.main}"        type="dir" property="main.present"/>
+	<available file="${src.main.daemon}" type="dir" property="main.daemon.present"/>
+	<available file="${src.test}"        type="dir" property="test.present"/>
+
+	<target name="mvn.test">
+		<echo>The version is ${mypom.version}</echo>
+	</target>
+	
+	<target name="svn.export.main" unless="main.present">
+		<echo>Getting source from svn server...</echo>
+		<mkdir dir="${src.main}"/>
+		<exec executable="svn" dir="${src.main}" spawn="false">
+			<arg value="export"/>
+			<arg value="--force"/>
+			<arg value="${svn.rep.main}"/>
+			<arg value="."/>
+		</exec>
+	</target>
+	
+	<target name="svn.co.main" unless="main.present">
+		<echo>Getting source from svn server...</echo>
+		<mkdir dir="${src.main}"/>
+		<exec executable="svn" dir="${src.main}" spawn="false">
+			<arg value="checkout"/>
+			<arg value="${svn.rep.main}"/>
+			<arg value="."/>
+		</exec>
+	</target>
+
+	<target name="svn.update">
+		<echo>Updating source from svn server...</echo>
+		<exec executable="svn" dir="." spawn="false">
+			<arg value="update" />
+		</exec>
+	</target>
+
+	<target name="compile.main" depends="svn.update">
+		<mkdir dir="${classes.dir.main}"/>
+		<javac srcdir="${src.dir}/main" destdir="${classes.dir.main}" includeantruntime="false" debug="on" source="1.6" target="1.6"  listfiles="true">
+			<include name="com/itnova/**/*.java"/>
+			<classpath refid="pom.classpath"/>
+		</javac>
+	</target>
+
+	<target name="compile.test" >
+		<mkdir dir="${classes.dir.test}"/>
+		<javac srcdir="${src.test}" destdir="${classes.dir.test}" includeantruntime="false" debug="on" fork="yes" executable="C:\IBM70\WebSphere\AppServer\java\bin\javac.exe" listfiles="true">
+			<include name="**/util/*.java"/>
+			<classpath refid="pom.classpath"/>
+			<classpath>
+				<pathelement location="${classes.dir.main}"/>
+			</classpath>
+		</javac>
+	</target>
+
+	<target name="jar" depends="compile.main">
+		<mkdir dir="build/main/jar"/>
+		<jar destfile="build/main/jar/itnova.jar" basedir="build/main/classes">
+			<include name="com/itnova/**/*.class"/>
+		</jar>
+	</target>
+
+	<target name="copy_to_web" depends="jar">
+		<copy todir="D:\project\itnova-web\WebContent\WEB-INF\lib">
+			<fileset dir="build/main/jar"/>
+		</copy>
+	</target>
+
+	<target name="copy" depends="jar">
+		<copy todir="D:\mcams.trunk\mobis.common\lib">
+			<fileset dir="build/main/jar"/>
+		</copy>
+		<copy todir="D:\mcams.trunk\mobis.mcams.common\lib">
+			<fileset dir="build/main/jar"/>
+		</copy>
+		<copy todir="D:\mcams.trunk\batch\lib">
+			<fileset dir="build/main/jar"/>
+		</copy>
+		<copy todir="D:\mcams.trunk\batch\run">
+			<fileset dir="build/main/jar"/>
+		</copy>
+	</target>
+
+	<target name="ftp.del">
+		<ftp action="del"
+			 server="10.10.163.161"
+		     remotedir="/mobis/mcams/application/mcamsEar.ear/mcams.war/WEB-INF/classes"
+			 userid="root"
+			 password="mobis!23"
+		>
+			<fileset>
+				<include name="com/**/*.class"/>
+			</fileset>
+		</ftp>
+	</target>
+
+	<target name="ftp.rmdir">
+		<ftp action="rmdir"
+			 server="10.10.163.161"
+		     remotedir="/mobis/mcams/application/mcamsEar.ear/mcams.war/WEB-INF/classes"
+			 userid="root"
+			 password="mobis!23"
+		>
+			<fileset>
+				<include name="com/**"/>
+			</fileset>
+		</ftp>
+	</target>
+
+
+	<target name="ftp.jar" depends="jar">
+		<ftp server="10.10.163.161"
+		     remotedir="/mobis/mcams/application/mcamsEar.ear/mcams.war/WEB-INF/lib"
+			 userid="1605089"
+			 password="ckdgus09"
+			 depends="yes" 
+			 binary="yes">
+			 <fileset dir="build/main/jar">
+				<include name="itnova.jar"/>
+			 </fileset>
+		</ftp>		
+	</target>
+
+	<target name="compile" depends="compile.main, compile.test"/>
+
+    <target name="test" depends="compile">
+        <junit haltonerror="yes" haltonfailure="no" fork="yes">
+            <formatter type="plain" usefile="false"/>
+			<batchtest fork="yes">
+				<fileset dir="${src.test}">
+					<include name="**/util/*Test.java"/>
+				</fileset>
+			</batchtest>
+            <classpath refid="pom.classpath"/>
+			<classpath>
+				<pathelement location="${classes.dir.test}"/>
+				<pathelement location="${classes.dir.main}"/>
+			</classpath>
+        </junit>
+    </target>
+
+	<target  name="ftp.js" >
+		<ftp server="10.10.163.161"
+			 remotedir="/mobis/mcams/resource/mcams/"
+			 userid="root" 
+			 password="mobis!23"
+			 depends="yes"
+			 verbose="yes"
+			 binary="no">
+			<fileset dir="mcams.war">
+				<include name="pa/*.js"/>
+			</fileset>
+		</ftp>
+	</target>
+
+	<target name="clean">
+		<delete dir="${build.dir}"/>
+	</target>
+
+	<target name="copy.jars" description="copy dependency jar file to lib">
+		<copy todir="lib">
+			<fileset refid="mydeps"/>
+			<mapper type="flatten"/>
+		</copy>
+	</target>
+
+	<target name="jar_cmd">
+		<jar destfile="D:\mcams.doc\build\dbscript\runscript.jar">
+			<fileset dir="D:\workspace\itnova\target\classes">
+				<include name="**/LocalContextFactory.class"/>
+				<include name="**/LocalContext.class"/>
+				<include name="**/SimpleException.class"/>
+				<include name="**/LocalDataSource.class"/>
+				<include name="**/DatabaseUtil.class"/>
+				<include name="**/RunScript.class"/>
+			</fileset>
+			<manifest>
+				<attribute name="Main-Class" value="com.itnova.util.RunScript"/>
+				<attribute name="Class-Path" value="jt400.jar"/>
+			</manifest>
+		</jar>
+	</target>
+</project>
