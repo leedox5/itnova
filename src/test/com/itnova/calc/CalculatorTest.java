@@ -1,8 +1,8 @@
 package com.itnova.calc;
 
-import static org.junit.Assert.*;
-
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.*;
 
 public class CalculatorTest {
 	
@@ -11,7 +11,7 @@ public class CalculatorTest {
 	@Test
 	public void test_add() {
 		calc = new CalculatorImpl();
-		assertNotNull("calc should be not null", calc);
-		assertEquals(101, calc.add(23,78));
+		assertThat(calc).isNotNull();
+		assertThat(calc.add(23, 78)).isEqualTo(101);
 	}
 }

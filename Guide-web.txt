@@ -1,5 +1,5 @@
-# Servlet Init Parameter È°¿ë
-  ¼­ºí¸´À» »ı¼ºÇÏ°í ÃÊ±âÈ­ÇÒ ¶§, ¼­ºí¸´ ÄÁÅ×´Ï¾î°¡ ¼­ºí¸´¿¡°Ô Àü´ŞÇÏ´Â µ¥ÀÌÅÍ
+# Servlet Init Parameter í™œìš©
+  ì„œë¸”ë¦¿ì„ ìƒì„±í•˜ê³  ì´ˆê¸°í™”í•  ë•Œ, ì„œë¸”ë¦¿ ì»¨í…Œë‹ˆì–´ê°€ ì„œë¸”ë¦¿ì—ê²Œ ì „ë‹¬í•˜ëŠ” ë°ì´í„°
 web.xml -----------------
   <servlet>
       <servlet-name>MtcdServlet</servlet-name>
@@ -26,10 +26,10 @@ web.xml -----------------
       <url-pattern>/mtcd</url-pattern>
   </servlet-mapping>
 ---------------------------------------------------------  
-  Dao connection ºÎºĞ ¼öÁ¤
-  setConnection Ãß°¡
+  Dao connection ë¶€ë¶„ ìˆ˜ì •
+  setConnection ì¶”ê°€
 
-  servlet¿¡¼­ connection »ı¼ºÇØ¼­ ³Ñ°ÜÁÖ±â
+  servletì—ì„œ connection ìƒì„±í•´ì„œ ë„˜ê²¨ì£¼ê¸°
 
 	private Connection getConnection() throws SQLException {
 		Connection con = null;
@@ -44,9 +44,9 @@ web.xml -----------------
 	}
 
 # Context Init Parameter
-- Servlet init paramÀº ´Ù¸¥ ¼­ºí¸´¿¡¼­´Â ÂüÁ¶ÇÒ¼ö ¾ø´Ù.
-- °øÅëÀÌ¶ó¸é context param È°¿ë
-- ¼­ºí¸´µéÀÌ °øÀ¯ÇÒ ¼ö ÀÖ´Â ¸Å°³º¯¼ö´Ù.
+- Servlet init paramì€ ë‹¤ë¥¸ ì„œë¸”ë¦¿ì—ì„œëŠ” ì°¸ì¡°í• ìˆ˜ ì—†ë‹¤.
+- ê³µí†µì´ë¼ë©´ context param í™œìš©
+- ì„œë¸”ë¦¿ë“¤ì´ ê³µìœ í•  ìˆ˜ ìˆëŠ” ë§¤ê°œë³€ìˆ˜ë‹¤.
 
 web.xml
   <context-param>
@@ -58,7 +58,7 @@ web.xml
     <param-value>jdbc:sqlite:E:/workspace/adworks/KNDA.db</param-value>
   </context-param>
 
--- connection °¡Á®¿À±â
+-- connection ê°€ì ¸ì˜¤ê¸°
 	private Connection getConnectionCont() throws SQLException {
 		Connection con = null;
 		ServletContext sc = this.getServletContext();
@@ -72,17 +72,17 @@ web.xml
 		return con;
 	}
 
-# ServletContext·Î DB connection °´Ã¼°ü¸®ÇÏ±â
-- ¼­ºí¸´µéÀÌ È£ÃâµÉ¶§¸¶´Ù DB Ä¿³Ø¼ÇÀ» »ı¼ºÇÏÁö ¾Ê°í
-¾îÇÃÀÌ ½ÃÀÛµÉ ¶§ »ı¼ºÇØ¼­ ServletContext¿¡ ÀúÀåÇÏ¸é
-ÇÊ¿äÇÑ ¼­ºí¸´¿¡¼­ ²¨³» ¾µ ¼ö ÀÖ´Ù.
+# ServletContextë¡œ DB connection ê°ì²´ê´€ë¦¬í•˜ê¸°
+- ì„œë¸”ë¦¿ë“¤ì´ í˜¸ì¶œë ë•Œë§ˆë‹¤ DB ì»¤ë„¥ì…˜ì„ ìƒì„±í•˜ì§€ ì•Šê³ 
+ì–´í”Œì´ ì‹œì‘ë  ë•Œ ìƒì„±í•´ì„œ ServletContextì— ì €ì¥í•˜ë©´
+í•„ìš”í•œ ì„œë¸”ë¦¿ì—ì„œ êº¼ë‚´ ì“¸ ìˆ˜ ìˆë‹¤.
 
-- °øÀ¯ ÀÚ¿øÀ» ÁØºñÇÏ´Â ¼­ºí¸´ ÀÛ¼º
+- ê³µìœ  ìì›ì„ ì¤€ë¹„í•˜ëŠ” ì„œë¸”ë¦¿ ì‘ì„±
 	public void init(ServletConfig config) throws ServletException {
 	    System.out.println("AppInitServlet.init() called");
 	    super.init(config);
 	 
-	    // ¸ğµç ¼­ºí¸´ÀÌ »ç¿ëÇÒ ¼ö ÀÖµµ·Ï ServletContext ÀÎ½ºÅÏ½º¿¡ ÀúÀå
+	    // ëª¨ë“  ì„œë¸”ë¦¿ì´ ì‚¬ìš©í•  ìˆ˜ ìˆë„ë¡ ServletContext ì¸ìŠ¤í„´ìŠ¤ì— ì €ì¥
 	    ServletContext sc = this.getServletContext();
 	 
 	    try {
@@ -114,31 +114,31 @@ web.xml
     <servlet-class>itnova.AppInitServlet</servlet-class>
     <load-on-startup>1</load-on-startup>
 </servlet>
-* Å¬¶óÀÌ¾ğÆ® ¿äÃ»ÀÌ ¾ø¾îµµ ¼­ºí¸´ÀÌ »ı¼ºµÅ¾ß ÇÏ¹Ç·Î <load-on-startup> ÅÂ±×¸¦ Ãß°¡ÇÑ´Ù.
+* í´ë¼ì´ì–¸íŠ¸ ìš”ì²­ì´ ì—†ì–´ë„ ì„œë¸”ë¦¿ì´ ìƒì„±ë¼ì•¼ í•˜ë¯€ë¡œ <load-on-startup> íƒœê·¸ë¥¼ ì¶”ê°€í•œë‹¤.
 
-- connection ¾ò±â
+- connection ì–»ê¸°
 	private Connection getConnectionInit() throws SQLException {
 		ServletContext sc = this.getServletContext();
 		return (Connection)sc.getAttribute("conn");
 	}
 
 
-# ServletContextListenerÀÇ È°¿ë
+# ServletContextListenerì˜ í™œìš©
 
 
 ================================================
 
 # Model2
-  ServletÀÌ Controller¸¦ ´ã´çÇÏ°í JSP´Â View¸¸ ´ã´ç
+  Servletì´ Controllerë¥¼ ë‹´ë‹¹í•˜ê³  JSPëŠ” Viewë§Œ ë‹´ë‹¹
 
-# forward¿Í redirect
-- redirect´Â HTTP ÀÀ´ä ÄÚµå·Î 302¸¦ Å¬¶óÀÌ¾ğÆ®¿¡ ³Ñ°ÜÁà¼­, ÇØ´ç URL·Î ´Ù½Ã ¿äÃ» ÇÏµµ·Ï ÇÕ´Ï´Ù.
-- ¸ğµç ÀÚ¿øÀ» ¹İÈ¯ÇÑ »óÅÂ·Î »õ·Ó°Ô ¿äÃ»À» ÇÏ´Â °ÍÀÌÁÒ.
+# forwardì™€ redirect
+- redirectëŠ” HTTP ì‘ë‹µ ì½”ë“œë¡œ 302ë¥¼ í´ë¼ì´ì–¸íŠ¸ì— ë„˜ê²¨ì¤˜ì„œ, í•´ë‹¹ URLë¡œ ë‹¤ì‹œ ìš”ì²­ í•˜ë„ë¡ í•©ë‹ˆë‹¤.
+- ëª¨ë“  ìì›ì„ ë°˜í™˜í•œ ìƒíƒœë¡œ ìƒˆë¡­ê²Œ ìš”ì²­ì„ í•˜ëŠ” ê²ƒì´ì£ .
 
-- ¹İ¸é forward´Â ¿äÃ» ¹ŞÀº ÀÚ¿øÀ» ±×´ë·Î À¯ÁöÇÑ Ã¤·Î Á¦¾î±ÇÀ» ³Ñ±â´Â requestÀÇ ¿¬Àå¼ºÀÔ´Ï´Ù.
-- Servlet¿¡¼­ ¿äÃ»À» Ã³¸®ÇÑ ÈÄ ±× ÀÚ¿øÀ» ±×´ë·Î À¯ÁöÇÑÃ¤ JSP¿¡ ³Ñ°ÜÁà¼­ JSP°¡ ÀÌ¸¦ »ç¿ëÇÒ ¼ö ÀÖµµ·Ï ÇÏ´Â ¸Ş¼­µåÀÔ´Ï´Ù.
+- ë°˜ë©´ forwardëŠ” ìš”ì²­ ë°›ì€ ìì›ì„ ê·¸ëŒ€ë¡œ ìœ ì§€í•œ ì±„ë¡œ ì œì–´ê¶Œì„ ë„˜ê¸°ëŠ” requestì˜ ì—°ì¥ì„±ì…ë‹ˆë‹¤.
+- Servletì—ì„œ ìš”ì²­ì„ ì²˜ë¦¬í•œ í›„ ê·¸ ìì›ì„ ê·¸ëŒ€ë¡œ ìœ ì§€í•œì±„ JSPì— ë„˜ê²¨ì¤˜ì„œ JSPê°€ ì´ë¥¼ ì‚¬ìš©í•  ìˆ˜ ìˆë„ë¡ í•˜ëŠ” ë©”ì„œë“œì…ë‹ˆë‹¤.
 
-# "add".equals(action)   action.equals("add")ÀÇ Â÷ÀÌ
+# "add".equals(action)   action.equals("add")ì˜ ì°¨ì´
 
 - Servlet doGet method
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -156,7 +156,7 @@ web.xml
         rd.forward(request, response);
 	}
 
-# view ¼³Á¤
+# view ì„¤ì •
 WEB-INF/views/Mtcd.jsp -----------------------
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@page import="itnova.EmpVo"%>
@@ -169,18 +169,18 @@ WEB-INF/views/Mtcd.jsp -----------------------
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>°ü¸®</title>
+    <title>ê´€ë¦¬</title>
 </head>
 <body>
 <form action="/itnova-web/emp" method="post">
     <input type="hidden" name="a" value="add">
     <table border="1" width="500">
         <tr>
-            <td>ÄÚµå</td><td><input type="text" name="code"></td>
-            <td>ÀÌ¸§</td><td><input type="text" name="name"></td>
+            <td>ì½”ë“œ</td><td><input type="text" name="code"></td>
+            <td>ì´ë¦„</td><td><input type="text" name="name"></td>
         </tr>
         <tr>
-            <td colspan=4 align=right><input type="submit" VALUE=" È®ÀÎ "></td>
+            <td colspan=4 align=right><input type="submit" VALUE=" í™•ì¸ "></td>
         </tr>
     </table>
 </form>
@@ -193,7 +193,7 @@ WEB-INF/views/Mtcd.jsp -----------------------
                 <td><%= vo.getNum() %></td>
                 <td><%= vo.getName() %></td>
                 <td><%= vo.getDeptNum() %></td>
-                <td><a href="/itnova-web/emp?a=delete&code=<%= vo.getNum() %>">»èÁ¦</a></td>
+                <td><a href="/itnova-web/emp?a=delete&code=<%= vo.getNum() %>">ì‚­ì œ</a></td>
             </tr>
     <% 
         } 
@@ -203,7 +203,7 @@ WEB-INF/views/Mtcd.jsp -----------------------
 </body>
 </html>
 
-- servlet add, delete ·ÎÁ÷ Ãß°¡
+- servlet add, delete ë¡œì§ ì¶”ê°€
         String action = request.getParameter("a");
         if("add".equals(action)) {
             request.setCharacterEncoding("utf-8");
@@ -229,10 +229,10 @@ WEB-INF/views/Mtcd.jsp -----------------------
         }
 
 
-# Dao¿¡¼­´Â ServletContext¿¡ Á¢±ÙÇÒ ¼ö ¾ø±â ¶§¹®¿¡ 
-  ¿ÜºÎ·ÎºÎÅÍ Connection °´Ã¼¸¦ ÁÖÀÔ¹Ş±â À§ÇÑ ÀÎ½ºÅÏ½º º¯¼ö¿Í setter°¡ ÇÊ¿äÇÏ´Ù.
+# Daoì—ì„œëŠ” ServletContextì— ì ‘ê·¼í•  ìˆ˜ ì—†ê¸° ë•Œë¬¸ì— 
+  ì™¸ë¶€ë¡œë¶€í„° Connection ê°ì²´ë¥¼ ì£¼ì…ë°›ê¸° ìœ„í•œ ì¸ìŠ¤í„´ìŠ¤ ë³€ìˆ˜ì™€ setterê°€ í•„ìš”í•˜ë‹¤.
 
-* ÂüÁ¶
+* ì°¸ì¡°
 https://atoz-develop.tistory.com/entry/IntelliJ-%ED%9A%8C%EC%9B%90%EA%B0%80%EC%9E%85-%EC%98%88%EC%A0%9CMVC-7-DAO-%EB%B6%84%EB%A6%AC%ED%95%98%EA%B8%B0?category=796489
 
 Connection connection;
@@ -241,5 +241,5 @@ public void setConnection(Connection connection) {
     this.connection = connection;
 }
 
-ÀÌ·¸°Ô ÇÊ¿äÇÑ °´Ã¼¸¦ ¿ÜºÎ·ÎºÎÅÍ ÁÖÀÔ¹Ş´Â °ÍÀ» ÀÇÁ¸¼º ÁÖÀÔ(DI, Dependency Injection)
-¶Ç´Â ¿ªÁ¦¾î(IoC, Inversion of Control)ÀÌ¶ó°í ºÎ¸¥´Ù.
+ì´ë ‡ê²Œ í•„ìš”í•œ ê°ì²´ë¥¼ ì™¸ë¶€ë¡œë¶€í„° ì£¼ì…ë°›ëŠ” ê²ƒì„ ì˜ì¡´ì„± ì£¼ì…(DI, Dependency Injection)
+ë˜ëŠ” ì—­ì œì–´(IoC, Inversion of Control)ì´ë¼ê³  ë¶€ë¥¸ë‹¤.
