@@ -12,6 +12,6 @@ public class CalculatorTest {
 	public void test_add() {
 		calc = new CalculatorImpl();
 		assertThat(calc).isNotNull();
-		assertThat(calc.add(23, 78)).as("ÇÕÀº 100ÀÌ¾î¾ß ÇÑ´Ù.").isEqualTo(101);
+		assertThat(calc.add(23, 78)).as("í•©ì€ 100ì´ì–´ì•¼ í•œë‹¤.").isEqualTo(101);
 	}
 }
