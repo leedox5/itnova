@@ -12,6 +12,6 @@ public class CalculatorTest {
 	public void test_add() {
 		calc = new CalculatorImpl();
 		assertThat(calc).isNotNull();
-		assertThat(calc.add(23, 78)).isEqualTo(101);
+		assertThat(calc.add(23, 78)).as("합은 100이어야 한다.").isEqualTo(101);
 	}
 }
