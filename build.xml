@@ -193,7 +193,7 @@
 				<include name="**/RunScript.class"/>
 			</fileset>
 			<manifest>
-				<attribute name="Main-Class" value="com.itnova.util.RunScript"/>
+				<attribute name="Main-Class" value="kr.co.itnova.util.RunScript"/>
 				<attribute name="Class-Path" value="jt400.jar"/>
 			</manifest>
 		</jar>

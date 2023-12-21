@@ -1,5 +1,7 @@
 .classpath
 .project
 .settings
+.idea
 resource
 target
+*.log

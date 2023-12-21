@@ -159,7 +159,7 @@ web.xml
 # view 설정
 WEB-INF/views/Mtcd.jsp -----------------------
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@page import="itnova.EmpVo"%>
+<%@page import="kr.co.itnova.EmpVo"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.ArrayList"%>
 <%
