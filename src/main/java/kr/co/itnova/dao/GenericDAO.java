@@ -11,6 +11,7 @@ public interface GenericDAO<T, PK extends Serializable> {
 	public void save(Session session, T entity);
 	public PK saveOnly(Session session, T entity);
 	public T findByID(Session session, Class<?> clazz, PK id);
+	public T findByID(Class<?> entity, PK id);
 	public List<T> findAll(Class<T> clazz);
 	public List<T> findMany(Query query);
 }

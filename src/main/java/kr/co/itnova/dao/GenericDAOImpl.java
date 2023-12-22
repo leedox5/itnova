@@ -4,18 +4,40 @@ import java.io.Serializable;
 import java.util.List;
 
 import kr.co.itnova.hibernate.HibernateUtil;
+import kr.co.itnova.hibernate.HibernateUtilLocal;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 public abstract class GenericDAOImpl<T, PK extends Serializable> implements GenericDAO<T, PK>{
-	
+
+	protected Session session;
+
+	public GenericDAOImpl(Session session) {
+		this.session = session;
+	}
+
+	public GenericDAOImpl() {
+
+	}
+
 	protected Session getSession() {
-		return HibernateUtil.getSession();
+		return session;
 	}
 	
 	public void save(T entity) {
-		Session session = this.getSession();
-		session.saveOrUpdate(entity);
+		Transaction transaction = null;
+
+		try (Session session = HibernateUtilLocal.getSessionFactory().openSession()) {
+			transaction = session.beginTransaction();
+			session.saveOrUpdate(entity);
+			transaction.commit();
+		} catch( Exception e) {
+			if (transaction != null) {
+				transaction.rollback();
+			}
+			e.printStackTrace();
+		}
 	}
 
 	public void save(Session session, T entity) {
@@ -29,9 +51,16 @@ public abstract class GenericDAOImpl<T, PK extends Serializable> implements Gene
 		pk = (PK)session.save(entity);
 		return pk;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public T findByID(Session session, Class<?> entity, PK id) {
+		T t = null;
+		t = (T) session.get(entity, id);
+		return t;
+	}
+
+	@SuppressWarnings("unchecked")
+	public T findByID(Class<?> entity, PK id) {
 		T t = null;
 		t = (T) session.get(entity, id);
 		return t;

@@ -14,14 +14,14 @@ import org.slf4j.LoggerFactory;
 public class MatlManagerImpl implements MatlManager {
 
 	private static final Logger logger = LoggerFactory.getLogger(MatlManagerImpl.class);
-	private MatlDAO matlDAO = new MatlDAOImpl();
+	private MatlDAO matlDAO = new MatlDAOImpl(HibernateUtil.getSession());
 	
 	@Override
 	public Matl findMatlByID(MatlPK matlPK) {
 		Matl matl = null;
 		try {
 			Session session = HibernateUtil.beginTransaction();
-			matl = (Matl)matlDAO.findByID(session, Matl.class, matlPK);
+			matl = (Matl)matlDAO.findByID(Matl.class, matlPK);
 			HibernateUtil.commitTransaction();
 		} catch(HibernateException ex) {
 			HibernateUtil.rollbackTransaction();

@@ -6,8 +6,17 @@ import kr.co.itnova.entities.Chsu;
 import kr.co.itnova.entities.ChsuPK;
 import kr.co.itnova.hibernate.HibernateUtil;
 import org.hibernate.Query;
+import org.hibernate.Session;
 
 public class ChsuDAOImpl extends GenericDAOImpl<Chsu, ChsuPK> implements ChsuDAO {
+
+	public ChsuDAOImpl(Session session) {
+		super(session);
+	}
+
+	public ChsuDAOImpl() {
+
+	}
 
 	@Override
 	public Integer getMaxSeq(String corpCode, String vendCode, String partNo, String pvendCode) {

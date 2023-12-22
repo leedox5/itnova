@@ -6,9 +6,18 @@ import kr.co.itnova.entities.Chms;
 import kr.co.itnova.entities.ChmsPK;
 import kr.co.itnova.hibernate.HibernateUtil;
 import org.hibernate.Query;
+import org.hibernate.Session;
 
 
 public class ChmsDAOImpl extends GenericDAOImpl<Chms, ChmsPK> implements ChmsDAO {
+
+	public ChmsDAOImpl(Session session) {
+		super(session);
+	}
+
+	public ChmsDAOImpl() {
+		super();
+	}
 
 	@Override
 	public List<Chms> findAllAlive(Class<Chms> class1) {

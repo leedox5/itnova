@@ -2,9 +2,9 @@ package kr.co.itnova.hibernate;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
-import org.hibernate.service.ServiceRegistryBuilder;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
 
 public class HibernateUtil {
@@ -13,9 +13,8 @@ public class HibernateUtil {
 	static {
 		try {
 			Configuration config = new Configuration().configure("hibernate.cfg.xml");
-			ServiceRegistry serviceRegistry = new ServiceRegistryBuilder().applySettings(config.getProperties()).buildServiceRegistry();
+			ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder().applySettings(config.getProperties()).build();
 			sessionFactory = config.buildSessionFactory(serviceRegistry);
-			new SchemaExport(config).create(true, false);
 		} catch (Throwable ex) {
 			System.err.println("> Initial SessionFactory creation failed. \n" + ex);
 			throw new ExceptionInInitializerError(ex);
@@ -27,8 +26,7 @@ public class HibernateUtil {
 	}
 	
 	public static Session getSession() {
-        Session hibernateSession = sessionFactory.getCurrentSession();
-        return hibernateSession;
+        return sessionFactory.getCurrentSession();
 	}
 
 	public static Session beginTransaction() {

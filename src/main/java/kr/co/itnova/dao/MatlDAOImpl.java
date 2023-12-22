@@ -6,8 +6,13 @@ import kr.co.itnova.entities.Matl;
 import kr.co.itnova.entities.MatlPK;
 import kr.co.itnova.hibernate.HibernateUtil;
 import org.hibernate.Query;
+import org.hibernate.Session;
 
 public class MatlDAOImpl extends GenericDAOImpl<Matl, MatlPK> implements MatlDAO {
+
+	public MatlDAOImpl(Session session) {
+		super(session);
+	}
 
 	@Override
 	public List<Matl> findByCode(MatlPK matlPK) {
